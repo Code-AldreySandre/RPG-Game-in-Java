@@ -1,24 +1,16 @@
-package br.com.seuusuario.jogorpg.core;
+package br.jogo.core;
 
-import br.com.seuusuario.jogorpg.personagem.Hero;
-import br.com.seuusuario.jogorpg.personagem.Player;
-import br.com.seuusuario.jogorpg.personagem.Monster;
-
-import br.com.seuusuario.jogorpg.enums.Dificuldade;
-import br.com.seuusuario.jogorpg.enums.EstadoJogo;
-
-import br.com.seuusuario.jogorpg.log.Log;
-
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-
+import br.jogo.personagens.Player;
+import br.jogo.personagens.Hero;
+import br.jogo.personagens.subclasses.Mago;
+import br.jogo.personagens.subclasses.Ladino;
+import br.jogo.personagens.subclasses.Guerreiro;
+import br.jogo.personagens.subclasses.Clerigo;
 
 import java.util.ArrayList;
-
-
 import java.util.List;
+import java.util.Scanner;
+
 
 public class Game {
     private List<Hero> herois; // Mago, clérigo, ladino e guerreiro
