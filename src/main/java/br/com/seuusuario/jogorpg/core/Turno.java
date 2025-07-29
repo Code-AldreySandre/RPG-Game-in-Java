@@ -1,9 +1,14 @@
-package nucleo;
-import Player.Player;
-import Player.Hero;
-import monstros.Monster;
+package br.com.seuusuario.jogorpg.core;
 
-import java.util.*;
+import br.com.seuusuario.jogorpg.personagem.Player;
+import br.com.seuusuario.jogorpg.personagem.Hero;
+import br.com.seuusuario.jogorpg.personagem.Monster;
+import br.com.seuusuario.jogorpg.core.Game;
+
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Map;
 
 
 public class Turno {
