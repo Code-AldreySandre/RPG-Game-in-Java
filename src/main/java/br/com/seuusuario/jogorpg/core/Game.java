@@ -8,7 +8,7 @@ import br.jogo.personagens.subclasses.Ladino;
 import br.jogo.personagens.subclasses.Guerreiro;
 import br.jogo.personagens.subclasses.Clerigo;
 
-import br.jogo.ia.IAAdaptativa;  // Import da IA adaptativa
+import br.jogo.ia.AdaptiveAI;  // Import da IA adaptativa
 
 import java.util.ArrayList;
 import java.util.List;
