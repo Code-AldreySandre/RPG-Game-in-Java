@@ -1,10 +1,16 @@
-package nucleo;
-import Player.Hero;
-import Player.Player;
-import enums.Dificuldade;
-import enums.EstadoJogo;
-import logs.Log;
-import monstros.Monster;
+package br.com.seuusuario.jogorpg.core;
+
+import br.com.seuusuario.jogorpg.personagem.Hero;
+import br.com.seuusuario.jogorpg.personagem.Player;
+import br.com.seuusuario.jogorpg.personagem.Monster;
+
+import br.com.seuusuario.jogorpg.enums.Dificuldade;
+import br.com.seuusuario.jogorpg.enums.EstadoJogo;
+
+import br.com.seuusuario.jogorpg.log.Log;
+
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
