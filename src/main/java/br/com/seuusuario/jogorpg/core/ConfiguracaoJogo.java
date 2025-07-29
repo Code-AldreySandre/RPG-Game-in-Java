@@ -1,6 +1,7 @@
 package br.com.seuusuario.jogorpg.core;
+
 import br.com.seuusuario.jogorpg.enums.Dificuldade;
-import br.jogo.personagens.Player;
+import br.com.seuusuario.jogorpg.personagem.Player;
 
 public class ConfiguracaoJogo {
 
