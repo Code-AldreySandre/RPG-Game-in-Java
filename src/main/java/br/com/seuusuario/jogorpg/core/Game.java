@@ -4,21 +4,19 @@ import Player.Player;
 import enums.Dificuldade;
 import enums.EstadoJogo;
 import logs.Log;
-import logs.Log;
 import monstros.Monster;
 
 import java.util.ArrayList;
 
-
 import java.util.List;
 
 public class Game {
-    public List<Hero>  herois; // Mago, clérigo, ladino e guerreiro
-    public List<Monster>   monstros;
-    public Dificuldade dificuldade; //Fácil, médio, dificíl
-    public List<Log> logs;
-    public Turno turnoAtual;
-    public EstadoJogo estado; // NÃO_INICIADO, EM_ANDAMENTO, PAUSADO, TERMINADO
+    private List<Hero>  herois; // Mago, clérigo, ladino e guerreiro
+    private List<Monster>   monstros;
+    private Dificuldade dificuldade; //Fácil, médio, dificíl
+    private List<Log> logs;
+    private Turno turnoAtual;
+    private EstadoJogo estado; // NÃO_INICIADO, EM_ANDAMENTO, PAUSADO, TERMINADO
 
     public Game(int quantidadeDeTurnos ){
         this.herois = new ArrayList<>();
@@ -27,13 +25,12 @@ public class Game {
         this.estado = EstadoJogo.NAO_INICIADO;
     }
 
-
     public void iniciarJogo(Dificuldade dificuldade){
         this.dificuldade =  dificuldade;
         gerarPersonagens();
         estado = EstadoJogo.EM_ANDAMENTO;
-
     }
+
     public void terminarJogo(){
         this.estado = EstadoJogo.TERMINADO;
         System.out.println("\n===== JOGO ENCERRADO =====");
@@ -54,12 +51,12 @@ public class Game {
 
         while(estado == EstadoJogo.EM_ANDAMENTO){
             System.out.println("\n===== TURNO " + numeroTurno + " =====");
-            List<Player> PersonagemsVivos = new ArrayList<>();
+            List<Player> personagemsVivos = new ArrayList<>();
             for(Hero heroi : herois)
-                if (heroi.getHp() > 0){PersonagemsVivos.add(heroi);}
+                if (heroi.getHp() > 0){personagemsVivos.add(heroi);}
             for(Monster monstro : monstros)
-                if(monstro.getHp() > 0){PersonagemsVivos.add(monstro);}
-            turnoAtual = new Turno(numeroTurno, PersonagemsVivos);
+                if(monstro.getHp() > 0){personagemsVivos.add(monstro);}
+            turnoAtual = new Turno(numeroTurno, personagemsVivos);
             turnoAtual.iniciarTurno();
 
             atualizarEstatisticas();
@@ -114,11 +111,11 @@ public class Game {
         }
         System.out.println("\n===== RESULTADO FINAL =====");
         if (heroisVivos > 0 && monstrosVivos == 0) {
-            System.out.println("✅ Heróis venceram!");
+            System.out.println("Heróis venceram!");
         } else if (monstrosVivos > 0 && heroisVivos == 0) {
-            System.out.println("💀 Monstros venceram!");
+            System.out.println("Monstros venceram!");
         } else {
-            System.out.println("⚔️ Empate!");
+            System.out.println("⚔Empate!");
         }
 
         System.out.println("\n===== LOGS DA BATALHA =====");
