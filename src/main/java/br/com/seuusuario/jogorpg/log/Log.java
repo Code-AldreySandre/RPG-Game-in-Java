@@ -18,7 +18,7 @@ public class Log {
     }
 
     public void salvar() {
-        System.out.printf("[%s][%s] %s%n", timestamp, tipo, mensagem);
+        System.out.printf("[%s][%s] %s [%s]%n", timestamp, tipo, mensagem, jogadorRelacionado.getNome());
     }
 
     // Getters e setters omitidos para brevidade
