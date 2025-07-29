@@ -1,7 +1,5 @@
 package br.jogo.personagens;
 
-import java.util.Random;
-
 public abstract class Player {
     protected String nome;
     protected int hp;
