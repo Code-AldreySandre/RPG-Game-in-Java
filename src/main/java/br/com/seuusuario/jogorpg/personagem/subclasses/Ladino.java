@@ -50,23 +50,24 @@ public class Ladino extends Hero {
 
     @Override
     public void realizarAtaque(Player alvoPlayer) {
-        double chanceCritico = this.furtividade * 0.02; // Ex: furtividade 20 = 40% de chance
-        boolean critico = Math.random() < chanceCritico;
+        ResultadoAtaque resultado = SistemaCombate.calcularResultadoAtaque(this, alvoPlayer);
 
-        int dano = critico ? this.ataque * 3 : this.ataque - alvoPlayer.getDefesa();
-        if (dano < 0) dano = 0;
+        // chance de ataque furtivo adicional (independente da destreza)
+        boolean ataqueFurtivo = Math.random() < (this.furtividade * 0.015); // 1.5% por ponto
+        int dano = SistemaCombate.calcularDano(this, alvoPlayer, resultado);
 
-        alvoPlayer.setHp(alvoPlayer.getHp() - dano);
+        if (resultado != ResultadoAtaque.ERROU && ataqueFurtivo) {
+            dano *= 3;
+            System.out.println(this.nome + " executa um ATAQUE FURTIVO em " + alvoPlayer.getNome() + "!");
+        }
 
-        System.out.println(this.nome + (critico ? " realiza um ATAQUE FURTIVO CRÍTICO" : " ataca") +
-                " " + alvoPlayer.getNome() + " causando " + dano + " de dano!");
+        SistemaCombate.aplicarDano(alvoPlayer, dano);
 
-        // Log da ação
-        Log log = new Log(this.nome + (critico ? " realizou ataque furtivo CRÍTICO" : " realizou ataque básico")
-                + " causando " + dano + " de dano em " + alvoPlayer.getNome(), TipoLog.ACAO, this);
+        System.out.println(this.nome + " atacou " + alvoPlayer.getNome() + " (" + resultado + "), causando " + dano + " de dano.");
+
+        Log log = new Log(msg, TipoLog.COMBATE, this);
         log.salvar();
 
-        // Atualiza IA adaptativa
         ia.registrarAcao("realizarAtaque", dano);
     }
 
@@ -100,19 +101,17 @@ public class Ladino extends Hero {
         if (!armadilhas.isEmpty()) {
             String armadilha = armadilhas.get(0); // exemplo simples
             int dano = this.ataque * 2;
-            alvoPlayer.setHp(alvoPlayer.getHp() - dano);
+
+            SistemaCombate.aplicarDano(alvoPlayer, dano);
 
             System.out.println(this.nome + " sabota " + alvoPlayer.getNome() + " com " + armadilha + ", causando " + dano + " de dano!");
 
-            // Log da ação
             Log log = new Log(this.nome + " usou armadilha " + armadilha + " causando " + dano + " de dano em " + alvoPlayer.getNome(), TipoLog.ACAO, this);
             log.salvar();
 
             ia.registrarAcao("sabotar", dano);
         } else {
             System.out.println(this.nome + " não possui armadilhas para usar.");
-
-            // Log da falha
             Log log = new Log(this.nome + " tentou usar armadilha, mas não possui.", TipoLog.ACAO, this);
             log.salvar();
         }

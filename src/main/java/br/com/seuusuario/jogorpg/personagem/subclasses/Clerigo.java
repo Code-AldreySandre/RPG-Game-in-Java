@@ -50,9 +50,9 @@ public class Clerigo extends Hero {
 
     @Override
     public void realizarAtaque(Player alvoPlayer) {
-        int dano = (int) (this.ataque * 0.8) - alvoPlayer.getDefesa();
-        if (dano < 0) dano = 0;
-        alvoPlayer.setHp(alvoPlayer.getHp() - dano);
+        ResultadoAtaque resultado = SistemaCombate.calcularResultadoAtaque(this, alvoPlayer);
+        int dano = SistemaCombate.calcularDano(this, alvoPlayer, resultado);
+        SistemaCombate.aplicarDano(alvoPlayer, dano);
 
         System.out.println(this.nome + " golpeia " + alvoPlayer.getNome() + " com sua maça sagrada causando " + dano + " de dano!");
 

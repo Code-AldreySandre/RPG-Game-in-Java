@@ -13,17 +13,12 @@ public class Monster extends Player {
 
     @Override
     public void realizarAtaque(Player alvoPlayer) {
-        Random rand = new Random();
+        ResultadoAtaque resultado = SistemaCombate.calcularResultadoAtaque(this, alvoPlayer);
+        int dano = SistemaCombate.calcularDano(this, alvoPlayer, resultado);
+        SistemaCombate.aplicarDano(alvoPlayer, dano);
 
-        int chanceAcerto = this.destreza + rand.nextInt(100);
-        if (chanceAcerto > 50) {
-            int dano = this.ataque - alvoPlayer.getDefesa();
-            dano = dano > 0 ? dano : 1;
-            alvoPlayer.setHp(alvoPlayer.getHp() - dano);
-            System.out.println(this.nome + " atacou " + alvoPlayer.getNome() + " causando " + dano + " de dano.");
-        } else {
-            System.out.println(this.nome + " errou o ataque em " + alvoPlayer.getNome() + ".");
-        }
+        System.out.println(this.nome + " atacou " + alvoPlayer.getNome() +
+                " e " + resultado + ", causando " + dano + " de dano.");
     }
 
     public static Monster gerarMonstroAdaptativo(int turno) {

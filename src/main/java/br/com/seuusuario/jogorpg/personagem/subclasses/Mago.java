@@ -49,17 +49,16 @@ public class Mago extends Hero {
 
     @Override
     public void realizarAtaque(Player alvoPlayer) {
-        int dano = (int) (this.ataque * 1.2) - (alvoPlayer.getDefesa() / 2);
-        if (dano < 0) dano = 0;
-        alvoPlayer.setHp(alvoPlayer.getHp() - dano);
+        ResultadoAtaque resultado = SistemaCombate.calcularResultadoAtaque(this, alvoPlayer);
+        int dano = SistemaCombate.calcularDano(this, alvoPlayer, resultado);
+        SistemaCombate.aplicarDano(alvoPlayer, dano);
 
-        System.out.println(this.nome + " lança um feitiço básico em " + alvoPlayer.getNome() + " causando " + dano + " de dano!");
+        System.out.println(this.nome + " lança um feitiço básico em " + alvoPlayer.getNome()
+                + " (" + resultado + "), causando " + dano + " de dano!");
 
-        // Log da ação
-        Log log = new Log(this.nome + " realizou ataque básico causando " + dano + " de dano em " + alvoPlayer.getNome(), TipoLog.ACAO, this);
+        Log log = new Log(mensagem, TipoLog.COMBATE, this);
         log.salvar();
 
-        // Atualiza IA adaptativa
         ia.registrarAcao("realizarAtaque", dano);
     }
 

@@ -27,13 +27,12 @@ public class Guerreiro extends Hero{
 
     @Override
     public void realizarAtaque(Player alvoPlayer){
-        int dano = this.ataque - alvoPlayer.getDefesa();
-        if (dano < 0) dano = 0;
-        alvoPlayer.setHp(alvoPlayer.getHp() - dano);
+        ResultadoAtaque resultado = SistemaCombate.calcularResultadoAtaque(this, alvo);
+        int dano = SistemaCombate.calcularDano(this, alvo, resultado);
+        SistemaCombate.aplicarDano(alvo, dano);
 
         System.out.println(this.nome + " ataca " + alvoPlayer.getNome() + " causando " + dano + " de dano!");
 
-        // Log da ação
         Log log = new Log(this.nome + " realizou ataque básico causando " + dano + " de dano em " + alvoPlayer.getNome(), TipoLog.ACAO, this);
         log.salvar();
 
