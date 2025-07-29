@@ -4,7 +4,7 @@ import br.jogo.personagens.Hero;
 import br.jogo.personagens.Player;
 import logs.Log;
 import logs.TipoLog;
-import ia.IAAdaptativa;  // Ajuste o pacote conforme seu projeto
+import ia.AdaptiveAI;  
 
 import java.util.List;
 
