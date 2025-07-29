@@ -2,6 +2,7 @@ package br.com.seuusuario.jogorpg.core;
 
 import br.com.seuusuario.jogorpg.enums.ResultadoAtaque;
 import br.com.seuusuario.jogorpg.personagem.Player;
+
 import java.util.Random;
 
 public class SistemaCombate {
