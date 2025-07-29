@@ -1,6 +1,6 @@
 package logs;
 
-import Player.Player;
+import br.jogo.personagens.Player;
 import enums.TipoLog;
 import java.time.LocalDateTime;
 
@@ -18,9 +18,15 @@ public class Log {
     }
 
     public void salvar() {
-        System.out.printf("[%s][%s] %s [%s]%n", timestamp, tipo, mensagem, jogadorRelacionado.getNome());
+        String nomeJogador = (jogadorRelacionado != null) ? jogadorRelacionado.getNome() : "N/A";
+        System.out.printf("[%s][%s] %s [%s]%n", timestamp, tipo, mensagem, nomeJogador);
     }
 
-    // Getters e setters omitidos para brevidade
+    // Método estático para criar logs específicos da IA adaptativa
+    public static Log criarLogIA(String mensagem, Player jogadorRelacionado) {
+        return new Log("[IA_ADAPTATIVA] " + mensagem, TipoLog.INFO, jogadorRelacionado);
+    }
+
+    // Getters e setters (omitidos para brevidade, adicione se precisar)
 }
 
