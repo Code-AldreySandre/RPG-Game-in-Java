@@ -4,6 +4,7 @@ import br.jogo.personagens.Player;
 import br.jogo.personagens.Hero;
 import br.jogo.personagens.Monster;
 import br.jogo.core.Game;
+import ai.AdaptiveAI;  
 
 import java.util.List;
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public class Turno {
             System.out.println("\n" + jogador.getNome() + " está agindo...");
 
             if (jogador instanceof Hero) {
-                // Heroi escolhe um monstro vivo para atacar
+                // Herói escolhe um monstro vivo para atacar
                 Monster alvo = game.getMonstros().stream()
                     .filter(m -> m.getHp() > 0)
                     .findFirst()
@@ -44,14 +45,37 @@ public class Turno {
                     jogador.realizarAtaque(alvo);
                 }
             } else if (jogador instanceof Monster) {
-                // Monstro escolhe um herói vivo para atacar
-                Hero alvo = game.getHerois().stream()
-                    .filter(h -> h.getHp() > 0)
-                    .findFirst()
-                    .orElse(null);
+                Monster monstro = (Monster) jogador;
+                AdaptiveAI ia = monstro.getIa();  // Método getter que retorna a IA do monstro
 
-                if (alvo != null) {
-                    jogador.realizarAtaque(alvo);
+                if (ia != null) {
+                    // IA decide o alvo entre heróis vivos
+                    Hero alvo = ia.decidirAlvo(game.getHerois());
+                    // IA decide a ação: "ataque" ou "habilidadeEspecial"
+                    String acao = ia.decidirAcao();
+
+                    if (alvo != null) {
+                        if ("habilidadeEspecial".equalsIgnoreCase(acao)) {
+                            monstro.usarHabilidadeEspecial(alvo);
+                        } else { // padrão ataque normal
+                            monstro.realizarAtaque(alvo);
+                        }
+
+                        // Registra ação no log (assumindo que o Game tenha método para isso)
+                        game.adicionarLog(monstro.getNome() + " usou " + acao + " em " + alvo.getNome());
+                    } else {
+                        System.out.println(monstro.getNome() + " não encontrou alvo válido para atacar.");
+                    }
+                } else {
+                    // Caso não tenha IA, agir como antes: atacar primeiro herói vivo
+                    Hero alvo = game.getHerois().stream()
+                        .filter(h -> h.getHp() > 0)
+                        .findFirst()
+                        .orElse(null);
+
+                    if (alvo != null) {
+                        monstro.realizarAtaque(alvo);
+                    }
                 }
             }
 
@@ -94,3 +118,4 @@ public class Turno {
     }
 
 }
+
