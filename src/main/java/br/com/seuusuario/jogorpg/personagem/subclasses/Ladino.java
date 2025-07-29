@@ -2,7 +2,7 @@ package br.jogo.personagens.subclasses;
 
 import br.jogo.personagens.Hero;
 import br.jogo.personagens.Player;
-import ia.IAAdaptativa;
+import ia.AdaptiveAI;
 import logs.Log;
 import logs.TipoLog;
 
