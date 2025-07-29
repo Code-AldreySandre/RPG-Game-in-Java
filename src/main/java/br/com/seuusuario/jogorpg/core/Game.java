@@ -2,37 +2,41 @@ package br.jogo.core;
 
 import br.jogo.personagens.Player;
 import br.jogo.personagens.Hero;
+import br.jogo.personagens.Monster;
 import br.jogo.personagens.subclasses.Mago;
 import br.jogo.personagens.subclasses.Ladino;
 import br.jogo.personagens.subclasses.Guerreiro;
 import br.jogo.personagens.subclasses.Clerigo;
 
+import br.jogo.ia.IAAdaptativa;  // Import da IA adaptativa
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
-
+import java.util.Map;
+import java.util.HashMap;
 
 public class Game {
     private List<Hero> herois; // Mago, clérigo, ladino e guerreiro
     private List<Monster> monstros;
-    private Dificuldade dificuldade; //Fácil, médio, dificíl
+    private Dificuldade dificuldade; // Fácil, médio, difícil
     private List<Log> logs;
     private Turno turnoAtual;
     private EstadoJogo estado; // NÃO_INICIADO, EM_ANDAMENTO, PAUSADO, TERMINADO
+    private IAAdaptativa iaAdaptativa;
 
     public Game(int quantidadeDeTurnos) {
         this.herois = new ArrayList<>();
         this.monstros = new ArrayList<>();
         this.logs = new ArrayList<>();
         this.estado = EstadoJogo.NAO_INICIADO;
+        this.iaAdaptativa = new IAAdaptativa();
     }
-
 
     public void iniciarJogo(Dificuldade dificuldade) {
         this.dificuldade = dificuldade;
         gerarPersonagens();
+        gerarMonstrosConformeDificuldade(1);  // Inicializa monstros no turno 1
         estado = EstadoJogo.EM_ANDAMENTO;
-
     }
 
     public void terminarJogo() {
@@ -56,6 +60,9 @@ public class Game {
         while (estado == EstadoJogo.EM_ANDAMENTO) {
             System.out.println("\n===== TURNO " + numeroTurno + " =====");
 
+            // Atualiza monstros conforme a IA a cada turno (opcional: pode gerar novos monstros ou ajustar existentes)
+            gerarMonstrosConformeDificuldade(numeroTurno);
+
             List<Player> personagensVivos = new ArrayList<>();
             for (Hero heroi : herois)
                 if (heroi.getHp() > 0) {
@@ -66,13 +73,11 @@ public class Game {
                     personagensVivos.add(monstro);
                 }
 
-            turnoAtual = new Turno(numeroTurno, personagensVivos, this);  // Passando a instância de Game
-            turnoAtual.iniciarTurno(this);  // Passando a instância de Game para o turno
+            turnoAtual = new Turno(numeroTurno, personagensVivos, this);
+            turnoAtual.iniciarTurno(this);
 
-            // Atualiza as estatísticas do jogo
             atualizarEstatisticas();
 
-            // Verifica se o jogo terminou
             if (verificarFimJogo()) {
                 terminarJogo();
                 break;
@@ -86,21 +91,20 @@ public class Game {
         boolean heroisVivos = false;
         boolean monstrosVivos = false;
 
-        for (int i = 0; i < herois.size(); i++) {
-            if (herois.get(i).getHp() > 0) {
+        for (Hero heroi : herois) {
+            if (heroi.getHp() > 0) {
                 heroisVivos = true;
                 break;
             }
         }
 
-        for (int i = 0; i < monstros.size(); i++) {
-            if (monstros.get(i).getHp() > 0) {
+        for (Monster monstro : monstros) {
+            if (monstro.getHp() > 0) {
                 monstrosVivos = true;
                 break;
             }
         }
 
-        // Se algum grupo não tiver ninguém vivo, o jogo termina
         return !heroisVivos || !monstrosVivos;
     }
 
@@ -108,14 +112,13 @@ public class Game {
         int heroisVivos = 0;
         int monstrosVivos = 0;
 
-        for (int i = 0; herois.size() > i; i++) {
-            if (herois.get(i).getHp() > 0) {
+        for (Hero heroi : herois) {
+            if (heroi.getHp() > 0) {
                 heroisVivos++;
             }
-
         }
-        for (int i = 0; monstros.size() > i; i++) {
-            if (monstros.get(i).getHp() > 0) {
+        for (Monster monstro : monstros) {
+            if (monstro.getHp() > 0) {
                 monstrosVivos++;
             }
         }
@@ -129,34 +132,42 @@ public class Game {
         }
 
         System.out.println("\n===== LOGS DA BATALHA =====");
-        for (int i = 0; i < logs.size(); i++) {
-            logs.get(i).salvar();
+        for (Log log : logs) {
+            log.salvar();
         }
-
     }
 
-    public void gerarMonstrosConformeDificuldade() {
-        // código do Aldrey
-    }
+    // Atualiza ou gera monstros conforme a dificuldade e turno usando IA adaptativa
+    public void gerarMonstrosConformeDificuldade(int turnoAtual) {
+        monstros.clear(); // limpa monstros antigos
+        int quantidade = 3 + turnoAtual; // Exemplo: mais monstros conforme o turno
 
+        for (int i = 0; i < quantidade; i++) {
+            Monster monstro = iaAdaptativa.gerarMonstroAdaptativo(turnoAtual);
+            monstros.add(monstro);
+        }
+    }
 
     private void gerarPersonagens() {
-        // Código do Aldrey
+        // Exemplo simples de criação dos heróis (você pode adaptar)
+        herois.add(new Mago("Gandalf", 100, 25, 10, 20, 15, 1, 0, 100, List.of("Bola de Fogo", "Raio")));
+        herois.add(new Ladino("Garrett", 90, 20, 12, 25, 20, 1, 0, 50, 30, List.of("Veneno"), List.of("Armadilha")));
+        herois.add(new Guerreiro("Aragorn", 120, 30, 20, 15, 10, 1, 0, 0, 40));
+        herois.add(new Clerigo("Elrond", 110, 15, 15, 18, 12, 1, 0, 80, List.of("Cura", "Benção")));
     }
-
 
     public void atualizarEstatisticas() {
         int heroisVivos = 0;
         int monstrosVivos = 0;
 
-        for (int i = 0; i < herois.size(); i++) {
-            if (herois.get(i).getHp() > 0) {
+        for (Hero heroi : herois) {
+            if (heroi.getHp() > 0) {
                 heroisVivos++;
             }
         }
 
-        for (int i = 0; i < monstros.size(); i++) {
-            if (monstros.get(i).getHp() > 0) {
+        for (Monster monstro : monstros) {
+            if (monstro.getHp() > 0) {
                 monstrosVivos++;
             }
         }
@@ -164,19 +175,15 @@ public class Game {
         System.out.println("Status Atual:");
         System.out.println("Heróis vivos: " + heroisVivos);
         System.out.println("Monstros vivos: " + monstrosVivos);
-
     }
 
     public Map<String, Player> getEstatisticasBatalha() {
         Map<String, Player> estatisticas = new HashMap<>();
 
-
-        // Adiciona os heróis no mapa
         for (Hero heroi : herois) {
             estatisticas.put(heroi.getNome(), heroi);
         }
 
-        // Adiciona os monstros no mapa
         for (Monster monstro : monstros) {
             estatisticas.put(monstro.getNome(), monstro);
         }
@@ -187,8 +194,6 @@ public class Game {
     public List<Hero> getHerois() {
         return herois;
     }
-
-
 
     public List<Monster> getMonstros() {
         return monstros;
