@@ -1,4 +1,7 @@
-package br.jogo.personagens;
+package br.jogo.personagens.subclasses;
+
+import br.jogo.personagens.Hero;
+import br.jogo.personagens.Player;
 
 public class Guerreiro extends Hero{
     private int furia;
