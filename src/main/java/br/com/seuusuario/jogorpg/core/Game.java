@@ -5,33 +5,39 @@ import enums.Dificuldade;
 import enums.EstadoJogo;
 import logs.Log;
 import monstros.Monster;
+import java.util.Map;
+import java.util.HashMap;
+
 
 import java.util.ArrayList;
+
 
 import java.util.List;
 
 public class Game {
-    private List<Hero>  herois; // Mago, clérigo, ladino e guerreiro
-    private List<Monster>   monstros;
+    private List<Hero> herois; // Mago, clérigo, ladino e guerreiro
+    private List<Monster> monstros;
     private Dificuldade dificuldade; //Fácil, médio, dificíl
     private List<Log> logs;
     private Turno turnoAtual;
     private EstadoJogo estado; // NÃO_INICIADO, EM_ANDAMENTO, PAUSADO, TERMINADO
 
-    public Game(int quantidadeDeTurnos ){
+    public Game(int quantidadeDeTurnos) {
         this.herois = new ArrayList<>();
         this.monstros = new ArrayList<>();
         this.logs = new ArrayList<>();
         this.estado = EstadoJogo.NAO_INICIADO;
     }
 
-    public void iniciarJogo(Dificuldade dificuldade){
-        this.dificuldade =  dificuldade;
+
+    public void iniciarJogo(Dificuldade dificuldade) {
+        this.dificuldade = dificuldade;
         gerarPersonagens();
         estado = EstadoJogo.EM_ANDAMENTO;
+
     }
 
-    public void terminarJogo(){
+    public void terminarJogo() {
         this.estado = EstadoJogo.TERMINADO;
         System.out.println("\n===== JOGO ENCERRADO =====");
         exibirResultado();
@@ -46,30 +52,36 @@ public class Game {
         }
     }
 
-    public void gerenciarTurnos(){
+    public void gerenciarTurnos() {
         int numeroTurno = 1;
 
-        while(estado == EstadoJogo.EM_ANDAMENTO){
+        while (estado == EstadoJogo.EM_ANDAMENTO) {
             System.out.println("\n===== TURNO " + numeroTurno + " =====");
-            List<Player> personagemsVivos = new ArrayList<>();
-            for(Hero heroi : herois)
-                if (heroi.getHp() > 0){personagemsVivos.add(heroi);}
-            for(Monster monstro : monstros)
-                if(monstro.getHp() > 0){personagemsVivos.add(monstro);}
-            turnoAtual = new Turno(numeroTurno, personagemsVivos);
-            turnoAtual.iniciarTurno();
 
+            List<Player> personagensVivos = new ArrayList<>();
+            for (Hero heroi : herois)
+                if (heroi.getHp() > 0) {
+                    personagensVivos.add(heroi);
+                }
+            for (Monster monstro : monstros)
+                if (monstro.getHp() > 0) {
+                    personagensVivos.add(monstro);
+                }
+
+            turnoAtual = new Turno(numeroTurno, personagensVivos, this);  // Passando a instância de Game
+            turnoAtual.iniciarTurno(this);  // Passando a instância de Game para o turno
+
+            // Atualiza as estatísticas do jogo
             atualizarEstatisticas();
 
-            if(verificarFimJogo()){
+            // Verifica se o jogo terminou
+            if (verificarFimJogo()) {
                 terminarJogo();
                 break;
             }
+
             numeroTurno++;
-
-
         }
-
     }
 
     public boolean verificarFimJogo() {
@@ -94,28 +106,28 @@ public class Game {
         return !heroisVivos || !monstrosVivos;
     }
 
-    public void exibirResultado(){
+    public void exibirResultado() {
         int heroisVivos = 0;
         int monstrosVivos = 0;
 
-        for(int i= 0 ; herois.size() > 0 ; i++){
-            if(herois.get(i).getHp() > 0 ){
+        for (int i = 0; herois.size() > i; i++) {
+            if (herois.get(i).getHp() > 0) {
                 heroisVivos++;
             }
 
         }
-        for(int i = 0; monstros.size() > 0; i++ ){
-            if(monstros.get(i).getHp() > 0 ){
+        for (int i = 0; monstros.size() > i; i++) {
+            if (monstros.get(i).getHp() > 0) {
                 monstrosVivos++;
             }
         }
         System.out.println("\n===== RESULTADO FINAL =====");
         if (heroisVivos > 0 && monstrosVivos == 0) {
-            System.out.println("Heróis venceram!");
+            System.out.println(" Heróis venceram!");
         } else if (monstrosVivos > 0 && heroisVivos == 0) {
-            System.out.println("Monstros venceram!");
+            System.out.println(" Monstros venceram!");
         } else {
-            System.out.println("⚔Empate!");
+            System.out.println(" Empate!");
         }
 
         System.out.println("\n===== LOGS DA BATALHA =====");
@@ -125,7 +137,7 @@ public class Game {
 
     }
 
-    public void gerarMonstrosConformeDificuldade(){
+    public void gerarMonstrosConformeDificuldade() {
         // código do Aldrey
     }
 
@@ -135,7 +147,7 @@ public class Game {
     }
 
 
-    public void atualizarEstatisticas(){
+    public void atualizarEstatisticas() {
         int heroisVivos = 0;
         int monstrosVivos = 0;
 
@@ -156,7 +168,31 @@ public class Game {
         System.out.println("Monstros vivos: " + monstrosVivos);
 
     }
-    public List<Log> getLogs(){
-       return logs;
-  }
+
+    public Map<String, Player> getEstatisticasBatalha() {
+        Map<String, Player> estatisticas = new HashMap<>();
+
+
+        // Adiciona os heróis no mapa
+        for (Hero heroi : herois) {
+            estatisticas.put(heroi.getNome(), heroi);
+        }
+
+        // Adiciona os monstros no mapa
+        for (Monster monstro : monstros) {
+            estatisticas.put(monstro.getNome(), monstro);
+        }
+
+        return estatisticas;
+    }
+
+    public List<Hero> getHerois() {
+        return herois;
+    }
+
+
+
+    public List<Monster> getMonstros() {
+        return monstros;
+    }
 }
