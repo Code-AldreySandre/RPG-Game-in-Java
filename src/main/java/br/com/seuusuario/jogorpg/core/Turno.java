@@ -1,13 +1,17 @@
 package nucleo;
+
 import Player.Player;
 import Player.Hero;
+import log.Log;
+import enums.TipoLog;
+import enums.ResultadoAtaque;
+import core.SistemaCombate;
 
 import java.util.*;
 
-
 public class Turno {
     private int rodada;
-    public List<Player> jogadores;
+    private List<Player> jogadores;
     private List<Player> ordemTurno;
     private int acoesRealizadas;
 
@@ -24,19 +28,55 @@ public class Turno {
         System.out.printf("          %d° rodada iniciada\n", rodada++);
         System.out.println("===========================================");
 
-
-        while (!verificarFimdoTurno()) {
+        while (!verificarFimTurno()) {
             Player jogador = ordemTurno.get(acoesRealizadas);
 
-            // Aqui irá entrar a ordenação e execução dos ataques
-            System.out.println(jogador.getNome() + " está agindo...");
+            if (jogador.getHp() <= 0) {
+                acoesRealizadas++;
+                continue;
+            }
 
-            // Após executar a ação:
+            if (jogador instanceof Hero) {
+                executarAcaoJogador(jogador);
+            } else {
+                processarAcoesMonstros(jogador);
+            }
+
             acoesRealizadas++;
         }
 
         System.out.println("Turno concluído.");
+    }
 
+    public void executarAcaoJogador(Player heroi) {
+//        Player alvo = null;         // TODO: quando a lógica de IA para escolha do alvo for implementada, substituir este bloco comentado
+//        for (Player p : jogadores) {
+//            if (!(p instanceof Hero) && p.getHp() > 0) {
+//                alvo = p;
+//                break;
+//            }
+//        }
+
+        if (alvo != null) {
+            ResultadoAtaque resultado = SistemaCombate.calcularResultadoAtaque(heroi, alvo);
+            int dano = SistemaCombate.calcularDano(heroi, alvo, resultado);
+            SistemaCombate.aplicarDano(alvo, dano);
+
+            String msg = heroi.getNome() + " atacou " + alvo.getNome()
+                    + " e " + resultado.name().toLowerCase().replace('_', ' ')
+                    + ", causando " + dano + " de dano.";
+            new Log(msg, TipoLog.COMBATE, heroi).salvar();
+
+            if (alvo.getHp() == 0) {
+                new Log(alvo.getNome() + " foi derrotado!", TipoLog.MORTE, alvo).salvar();
+            }
+        } else {
+            System.out.println(heroi.getNome() + " não encontrou nenhum monstro vivo.");
+        }
+    }
+
+    public void processarAcoesMonstros(Player monstro) {
+        // TODO: lógica de IA feita pelo Aldrey
     }
 
     public List<Player> ordenarPorVelocidade() {
@@ -49,29 +89,15 @@ public class Turno {
         });
         return ordenada;
     }
-    public void executarAcaoJogador() {
-        //Irá entrar o código do Aldrey
 
-    }
-
-    public boolean verificarFimdoTurno(){
+    public boolean verificarFimTurno() {
         return acoesRealizadas >= ordemTurno.size();
-
     }
-    public List<Player> getOrdemTurno(){
+
+    public List<Player> getOrdemTurno() {
         System.out.println("A ordem dos ataques dos hérois é: " );
         for(Player ordemTurno : ordemTurno){
             System.out.println(ordemTurno.getNome());}
         return ordemTurno;
     }
-
-    public void processarAcoesMonstros(){
-        //Irá entrar o código do Aldrey
-
-    }
-
-
 }
-
-
-
