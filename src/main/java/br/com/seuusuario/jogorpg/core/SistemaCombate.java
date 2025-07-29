@@ -6,18 +6,24 @@ import java.util.Random;
 
 public class SistemaCombate {
     private static final Random random = new Random();
-
+     // calcula o resultado do ataque com base na destreza do atacante
+     // quanto maior a destreza, menor a chance de erro e maior a chance de crítico
     public static ResultadoAtaque calcularResultadoAtaque(Player atacante, Player alvo) {
         if (atacante == null || alvo == null) {
             throw new IllegalArgumentException("Atacante e alvo não podem ser nulos.");
         }
 
-        int chance = random.nextInt(100);
         int destreza = atacante.getDestreza();
 
-        if (chance < destreza / 5) {
+        double chanceErro = Math.max(0.05, 0.3 - (destreza / 200.0));       // minimo 5%
+        double chanceCritico = Math.min(0.5, destreza / 150.0);             // maximo 50%
+        double chanceAcerto = 1.0 - chanceErro - chanceCritico;
+
+        double sorte = random.nextDouble(); // entre 0.0 e 1.0
+
+        if (sorte < chanceErro) {
             return ResultadoAtaque.ERROU;
-        } else if (chance < destreza) {
+        } else if (sorte < chanceErro + chanceAcerto) {
             return ResultadoAtaque.ACERTOU;
         } else {
             return ResultadoAtaque.CRITICAL_HIT;
@@ -29,16 +35,19 @@ public class SistemaCombate {
             throw new IllegalArgumentException("Argumentos nulos não são permitidos.");
         }
 
-        int danoBase = Math.max(0, atacante.getAtaque() - alvo.getDefesa());
+        int ataque = atacante.getAtaque();
+        int defesa = alvo.getDefesa();
+
+        int danoBase = Math.max(0, ataque - (defesa / 2)); // defesa reduz metade do dano
 
         switch (resultado) {
             case ERROU:
                 return 0;
             case CRITICAL_HIT:
-                return danoBase * 2;
+                return Math.max(2, danoBase * 2); // crítico dobra o dano, mínimo 2
             case ACERTOU:
             default:
-                return danoBase;
+                return Math.max(1, danoBase); // acerto normal, mínimo 1
         }
     }
 

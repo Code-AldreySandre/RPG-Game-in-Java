@@ -49,30 +49,7 @@ public class Turno {
     }
 
     public void executarAcaoJogador(Player heroi) {
-//        Player alvo = null;         // TODO: quando a lógica de IA para escolha do alvo for implementada, substituir este bloco comentado
-//        for (Player p : jogadores) {
-//            if (!(p instanceof Hero) && p.getHp() > 0) {
-//                alvo = p;
-//                break;
-//            }
-//        }
-
-        if (alvo != null) {
-            ResultadoAtaque resultado = SistemaCombate.calcularResultadoAtaque(heroi, alvo);
-            int dano = SistemaCombate.calcularDano(heroi, alvo, resultado);
-            SistemaCombate.aplicarDano(alvo, dano);
-
-            String msg = heroi.getNome() + " atacou " + alvo.getNome()
-                    + " e " + resultado.name().toLowerCase().replace('_', ' ')
-                    + ", causando " + dano + " de dano.";
-            new Log(msg, TipoLog.COMBATE, heroi).salvar();
-
-            if (alvo.getHp() == 0) {
-                new Log(alvo.getNome() + " foi derrotado!", TipoLog.MORTE, alvo).salvar();
-            }
-        } else {
-            System.out.println(heroi.getNome() + " não encontrou nenhum monstro vivo.");
-        }
+        // TODO: lógica de IA feita pelo Aldrey
     }
 
     public void processarAcoesMonstros(Player monstro) {
