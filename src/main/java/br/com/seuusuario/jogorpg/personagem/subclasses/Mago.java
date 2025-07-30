@@ -53,8 +53,9 @@ public class Mago extends Hero {
         int dano = SistemaCombate.calcularDano(this, alvoPlayer, resultado);
         SistemaCombate.aplicarDano(alvoPlayer, dano);
 
-        System.out.println(this.nome + " lança um feitiço básico em " + alvoPlayer.getNome()
-                + " (" + resultado + "), causando " + dano + " de dano!");
+        String mensagem = this.nome + " lança um feitiço básico em " + alvoPlayer.getNome()
+                + " (" + resultado + "), causando " + dano + " de dano!";
+        System.out.println(mensagem);
 
         Log log = new Log(mensagem, TipoLog.COMBATE, this);
         log.salvar();

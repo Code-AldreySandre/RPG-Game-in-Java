@@ -63,13 +63,15 @@ public class Ladino extends Hero {
 
         SistemaCombate.aplicarDano(alvoPlayer, dano);
 
-        System.out.println(this.nome + " atacou " + alvoPlayer.getNome() + " (" + resultado + "), causando " + dano + " de dano.");
+        String mensagem = this.nome + " atacou " + alvoPlayer.getNome() + " (" + resultado + "), causando " + dano + " de dano.";
+        System.out.println(msg);
 
-        Log log = new Log(msg, TipoLog.COMBATE, this);
+        Log log = new Log(mensagem, TipoLog.COMBATE, this);
         log.salvar();
 
         ia.registrarAcao("realizarAtaque", dano);
     }
+
 
     @Override
     public void usarHabilidadeEspecial(Player alvo) {
