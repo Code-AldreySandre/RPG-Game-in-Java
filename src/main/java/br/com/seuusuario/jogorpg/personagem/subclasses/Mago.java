@@ -53,10 +53,23 @@ public class Mago extends Hero {
         int dano = SistemaCombate.calcularDano(this, alvoPlayer, resultado);
         SistemaCombate.aplicarDano(alvoPlayer, dano);
 
-        String mensagem = this.nome + " lança um feitiço básico em " + alvoPlayer.getNome()
-                + " (" + resultado + "), causando " + dano + " de dano!";
-        System.out.println(mensagem);
+        String mensagem;
+        switch (resultado) {
+            case ERROU:
+                mensagem = this.nome + " tentou lançar um feitiço em " + alvoPlayer.getNome() + ", mas errou!";
+                break;
+            case CRITICAL_HIT:
+                mensagem = this.nome + " lança um FEITIÇO CRÍTICO em " + alvoPlayer.getNome()
+                        + ", causando " + dano + " de dano mágico!";
+                break;
+            case ACERTOU:
+            default:
+                mensagem = this.nome + " lança um feitiço em " + alvoPlayer.getNome()
+                        + ", causando " + dano + " de dano mágico!";
+                break;
+        }
 
+        System.out.println(mensagem);
         Log log = new Log(mensagem, TipoLog.COMBATE, this);
         log.salvar();
 

@@ -51,24 +51,28 @@ public class Ladino extends Hero {
     @Override
     public void realizarAtaque(Player alvoPlayer) {
         ResultadoAtaque resultado = SistemaCombate.calcularResultadoAtaque(this, alvoPlayer);
-
-        // chance de ataque furtivo adicional (independente da destreza)
-        boolean ataqueFurtivo = Math.random() < (this.furtividade * 0.015); // 1.5% por ponto
+        boolean ataqueFurtivo = Math.random() < (this.furtividade * 0.015); // 1.5% por ponto de furtividade
         int dano = SistemaCombate.calcularDano(this, alvoPlayer, resultado);
 
-        if (resultado != ResultadoAtaque.ERROU && ataqueFurtivo) {
-            dano *= 3;
-            System.out.println(this.nome + " executa um ATAQUE FURTIVO em " + alvoPlayer.getNome() + "!");
+        String mensagem;
+
+        if (resultado == ResultadoAtaque.ERROU) {
+            mensagem = this.nome + " errou o ataque contra " + alvoPlayer.getNome() + "!";
+        } else {
+            if (ataqueFurtivo) {
+                dano *= 3;
+                mensagem = this.nome + " executa um ATAQUE FURTIVO em " + alvoPlayer.getNome() + " causando " + dano + " de dano!";
+            } else if (resultado == ResultadoAtaque.CRITICAL_HIT) {
+                mensagem = this.nome + " realiza um GOLPE CRÍTICO em " + alvoPlayer.getNome() + ", causando " + dano + " de dano!";
+            } else {
+                mensagem = this.nome + " ataca " + alvoPlayer.getNome() + " causando " + dano + " de dano.";
+            }
+
+            SistemaCombate.aplicarDano(alvoPlayer, dano);
         }
 
-        SistemaCombate.aplicarDano(alvoPlayer, dano);
-
-        String mensagem = this.nome + " atacou " + alvoPlayer.getNome() + " (" + resultado + "), causando " + dano + " de dano.";
-        System.out.println(msg);
-
-        Log log = new Log(mensagem, TipoLog.COMBATE, this);
-        log.salvar();
-
+        System.out.println(mensagem);
+        new Log(mensagem, TipoLog.COMBATE, this).salvar();
         ia.registrarAcao("realizarAtaque", dano);
     }
 

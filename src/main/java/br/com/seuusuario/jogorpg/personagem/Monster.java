@@ -17,8 +17,25 @@ public class Monster extends Player {
         int dano = SistemaCombate.calcularDano(this, alvoPlayer, resultado);
         SistemaCombate.aplicarDano(alvoPlayer, dano);
 
-        System.out.println(this.nome + " atacou " + alvoPlayer.getNome() +
-                " e " + resultado + ", causando " + dano + " de dano.");
+        String mensagem;
+        switch (resultado) {
+            case ERROU:
+                mensagem = this.nome + " tentou atacar " + alvoPlayer.getNome() + ", mas errou!";
+                break;
+            case CRITICAL_HIT:
+                mensagem = this.nome + " desferiu um GOLPE CRÍTICO em " + alvoPlayer.getNome()
+                        + ", causando " + dano + " de dano!";
+                break;
+            case ACERTOU:
+            default:
+                mensagem = this.nome + " atacou " + alvoPlayer.getNome() + " causando " + dano + " de dano.";
+                break;
+        }
+
+        System.out.println(mensagem);
+
+        Log log = new Log(mensagem, TipoLog.COMBATE, this);
+        log.salvar();
     }
 
     public static Monster gerarMonstroAdaptativo(int turno) {

@@ -54,10 +54,28 @@ public class Clerigo extends Hero {
         int dano = SistemaCombate.calcularDano(this, alvoPlayer, resultado);
         SistemaCombate.aplicarDano(alvoPlayer, dano);
 
-        System.out.println(this.nome + " golpeia " + alvoPlayer.getNome() + " com sua maça sagrada causando " + dano + " de dano!");
+        String mensagem;
 
-        Log log = new Log(this.nome + " realizou ataque básico causando " + dano + " de dano em " + alvoPlayer.getNome(), TipoLog.ACAO, this);
-        log.salvar();
+        switch (resultado) {
+            case ERROU:
+                mensagem = this.nome + " errou o ataque em " + alvoPlayer.getNome() + "!";
+                System.out.println(mensagem);
+                new Log(mensagem, TipoLog.ERRO, this).salvar();
+                break;
+
+            case CRITICAL_HIT:
+                mensagem = this.nome + " realiza um GOLPE CRÍTICO com sua maça sagrada em " + alvoPlayer.getNome() + ", causando " + dano + " de dano!";
+                System.out.println(mensagem);
+                new Log(mensagem, TipoLog.COMBATE, this).salvar();
+                break;
+
+            case ACERTOU:
+            default:
+                mensagem = this.nome + " golpeia " + alvoPlayer.getNome() + " com sua maça sagrada causando " + dano + " de dano.";
+                System.out.println(mensagem);
+                new Log(mensagem, TipoLog.COMBATE, this).salvar();
+                break;
+        }
 
         ia.registrarAcao("realizarAtaque", dano);
     }
